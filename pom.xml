@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>2.11</version>
+        <relativePath />
+    </parent>
+    <groupId>oneke</groupId>
+    <artifactId>aliyun-oss</artifactId>
+    <version>1.0.5</version>
+    <packaging>hpi</packaging>
+
+    <properties>
+        <jenkins.version>2.32.1</jenkins.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <name>Aliyun OSS Plugin for Jenkins</name>
+    <description>Upload static resources in the project to the Ali OSS storage to achieve page acceleration (CDN)
+    </description>
+    <url>http://ci.1ke.vip/</url>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>http://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>leixu2txtek</id>
+            <name>Lei Xu</name>
+            <email>leixu@txtek.cn</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>https://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <scm>
+        <connection>scm:git:ssh://github.com/jenkinsci/aliyunoss-builder.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jenkinsci/aliyunoss-builder.git</developerConnection>
+        <url>https://github.com/jenkinsci/aliyunoss-builder</url>
+      <tag>aliyun oss</tag>
+  </scm>
+
+</project>

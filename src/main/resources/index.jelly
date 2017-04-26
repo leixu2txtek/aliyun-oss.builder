@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+  将项目中的静态资源上传至阿里OSS存储，以达到网页加速效果（CDN）
+</div>
