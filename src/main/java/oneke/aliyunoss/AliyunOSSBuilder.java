@@ -75,6 +75,8 @@ public class AliyunOSSBuilder extends Builder implements SimpleBuildStep {
 
         if (!(directory.exists() && directory.isDirectory())) {
 
+            build.setResult(Result.FAILURE);
+
             logger.println("构建失败，文件夹获取失败");
             return;
         }
@@ -85,6 +87,8 @@ public class AliyunOSSBuilder extends Builder implements SimpleBuildStep {
         ArrayList<String> filePaths = new ArrayList<String>();
 
         for (String p : this.FilePaths.split(";")) {
+
+            p = p.replace("\\", File.separator);
 
             filePaths.add(p);
             paths.add(new File(directory, p).getPath());
@@ -125,6 +129,27 @@ public class AliyunOSSBuilder extends Builder implements SimpleBuildStep {
 
         //endregion
 
+        //region remove current job's files in ali oss
+
+        String prefix = String.format("public/%s/", jobName);
+
+        try {
+
+            client.deleteObject(this.getBucketName(), prefix);
+        } catch (Exception ex) {
+
+            build.setResult(Result.FAILURE);
+
+            logger.println(String.format("删除 %s 目录下文件失败", prefix));
+            return;
+        }
+
+        logger.println(String.format("删除 %s 目录下文件成功", prefix));
+
+        //endregion
+
+        String root = String.format("%s%s", directory.getAbsolutePath(), File.separator);
+
         for (String file : files) {
 
             //region create upload meta
@@ -139,20 +164,21 @@ public class AliyunOSSBuilder extends Builder implements SimpleBuildStep {
 
             //region resolve the object key (path?)
 
-            String path = file.replace(String.format("%s%s", directory.getAbsolutePath(), File.separator), "");
+            file = file.replace(root, "");
 
-            for (String t : filePaths) path = path.replace(t, "");
+            for (String t : filePaths) file = file.replace(t, "");
 
-            if (path.indexOf(File.separator) != -1) path = path.substring(1);
+            if (file.indexOf(File.separator) != -1) file = file.substring(1);
 
-            path = String.format("public%s%s%s%s", File.separator, jobName, File.separator, path);
+            //upload objects in public directory
+            file = String.format("%s%s", prefix, file);
 
-            logger.println(String.format("正在上传资源：%s", path));
+            logger.println(String.format("正在上传资源：%s", file));
 
             //endregion
 
             // upload file
-            client.putObject(this.getBucketName(), path, content, meta);
+            client.putObject(this.getBucketName(), file, content, meta);
         }
 
         logger.println(String.format("成功上传 %s 个静态资源", files.size()));
@@ -249,7 +275,19 @@ public class AliyunOSSBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.error("阿里云EndPointSuffix不能为空！");
             }
 
-            //TODO validate oss account
+            //region validate oss account
+
+            try {
+
+                OSSClient client = new OSSClient(EndPointSuffix, AccessKey, SecretKey);
+                client.listBuckets();
+
+            } catch (Exception e) {
+
+                return FormValidation.error("阿里云帐号验证失败！");
+            }
+
+            //endregion
 
             return FormValidation.ok("验证阿里云帐号成功！");
         }
